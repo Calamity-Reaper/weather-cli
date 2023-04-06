@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {getArgs} from './helpers/args.js'
 import {printHelp, printSuccess, printError} from "./services/log.service.js";
-import {saveKeyValue} from "./services/storage.service.js";
+import {saveKeyValue, TOKEN_DICTIONARY} from "./services/storage.service.js";
 
 const saveToken = async (token) => {
     if(!token.length) {
@@ -9,7 +9,7 @@ const saveToken = async (token) => {
         return;
     }
     try {
-        await saveKeyValue('token', token)
+        await saveKeyValue(TOKEN_DICTIONARY.token, token)
         printSuccess('Token is saved');
     } catch (e) {
         printError(e.message);
