@@ -18,6 +18,18 @@ const printHelp = () => {
         -t [API_KEY] - set api key
       `
     );
+};
+
+const printWeather = (res) => {
+  console.log(
+    dedent`${chalk.bgYellow.grey('WEATHER')}
+        City: ${res.name}
+        Weather: ${res.weather[0].description}
+        Temperature: ${res.main.temp}
+        Fells like: ${res.main.feels_like}
+        Wind speed: ${res.wind.speed} 
+    `
+  );
 }
 
-export {printError, printSuccess, printHelp}
+export {printError, printSuccess, printHelp, printWeather}
