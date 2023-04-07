@@ -1,12 +1,14 @@
 import chalk from 'chalk';
 import dedent from "dedent-js";
+import {LANGUAGE_DICTIONARY} from "../helpers/constants.js";
+import {weatherTranslation} from "../helpers/weatherTranslation.js";
 
 const printError = (err) => {
-    console.log(`${chalk.bgRed('ERROR')} ${err}`);
+    console.log(`${chalk.bgRed(' ERROR ')} ${err}`);
 };
 
 const printSuccess = (message) => {
-    console.log(`${chalk.bgGreen('SUCCESS')} ${message}`);
+    console.log(`${chalk.bgGreen(' SUCCESS ')} ${message}`);
 };
 
 const printHelp = () => {
@@ -20,16 +22,17 @@ const printHelp = () => {
     );
 };
 
-const printWeather = (res) => {
-  console.log(
-    dedent`${chalk.bgYellow.grey('WEATHER')}
-        City: ${res.name}
-        Weather: ${res.weather[0].description}
-        Temperature: ${res.main.temp}
-        Fells like: ${res.main.feels_like}
-        Wind speed: ${res.wind.speed} 
-    `
-  );
+const printLangHelp = () => {
+    console.log(
+        dedent`${chalk.bgCyan.black(' LANGUAGES ')}`
+    );
+    for (const lang in LANGUAGE_DICTIONARY) {
+        console.log(`${LANGUAGE_DICTIONARY[lang]} - ${lang}`);
+    }
 }
 
-export {printError, printSuccess, printHelp, printWeather}
+const printWeather = (lang, res) => {
+  console.log(weatherTranslation(lang, res));
+}
+
+export {printError, printSuccess, printHelp, printLangHelp, printWeather}

@@ -1,8 +1,9 @@
-import {getKeyValue, TOKEN_DICTIONARY} from './storage.service.js';
+import {getKeyValue} from './storage.service.js';
+import {DATA_KEY_DICTIONARY} from "../helpers/constants.js";
 import axios from "axios";
 
-const getWeather = async (city) => {
-    const token = process.env.TOKEN ?? await getKeyValue(TOKEN_DICTIONARY.token);
+const getWeather = async (city, lang) => {
+    const token = process.env.TOKEN ?? await getKeyValue(DATA_KEY_DICTIONARY.token);
     if (!token) {
         throw new Error('API key not set, set it by command -t [API_KEY]');
     }
@@ -14,7 +15,7 @@ const getWeather = async (city) => {
         params: {
             q: city,
             appid: token,
-            lang: 'ua',
+            lang: lang,
             units: 'metric'
         }
     });

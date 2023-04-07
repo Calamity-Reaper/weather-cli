@@ -1,39 +1,15 @@
 #!/usr/bin/env node
 import {getArgs} from './helpers/args.js'
-import {printHelp, printSuccess, printError, printWeather} from "./services/log.service.js";
-import {getKeyValue, saveKeyValue, TOKEN_DICTIONARY} from "./services/storage.service.js";
+import {printHelp, printError, printWeather, printLangHelp} from "./services/log.service.js";
+import {getKeyValue} from "./services/storage.service.js";
 import {getWeather} from "./services/api.service.js";
-
-const saveToken = async (token) => {
-    if(!token.length) {
-        printError('No token pass');
-        return;
-    }
-    try {
-        await saveKeyValue(TOKEN_DICTIONARY.token, token);
-        printSuccess('Token is saved');
-    } catch (e) {
-        printError(e.message);
-    }
-}
-
-const saveCity = async (city) => {
-    if (!city.length) {
-        printError('No city pass');
-        return;
-    }
-    try {
-        await saveKeyValue(TOKEN_DICTIONARY.city, city);
-        printSuccess('City is saved');
-    } catch (e) {
-        printError(e.message);
-    }
-}
+import {saveCity, saveLanguage, saveToken} from "./services/saveOption.service.js";
+import {DATA_KEY_DICTIONARY} from "./helpers/constants.js";
 
 const getForcast = async () => {
     try {
-        const weather = await getWeather(await getKeyValue(TOKEN_DICTIONARY.city));
-        printWeather(weather);
+        const weather = await getWeather(await getKeyValue(DATA_KEY_DICTIONARY.city), await getKeyValue(DATA_KEY_DICTIONARY.language));
+        printWeather(await getKeyValue(DATA_KEY_DICTIONARY.language), weather);
     } catch (e) {
         if(e?.response?.status === 404) {
             printError('Incorrect city');
@@ -48,14 +24,33 @@ const getForcast = async () => {
 
 const initCLI = () => {
     const args = getArgs(process.argv);
-    if (args.h) {
-        printHelp();
+    if (args.hasOwnProperty('h')) {
+        //Print help
+        return printHelp();
     }
-    if (args.s) {
-        return saveCity(args.s);
+    if (args.hasOwnProperty('s')) {
+        //Save city
+        if (args.s) {
+            return saveCity(args.s);
+        } else {
+            return printError(`City can't be empty`);
+        }
     }
-    if (args.t) {
-        return saveToken(args.t);
+    if (args.hasOwnProperty('t')) {
+        //Save token
+        if (args.t) {
+            return saveToken(args.t);
+        } else {
+            return printError(`Token can't be empty`);
+        }
+    }
+    if (args.hasOwnProperty('l')) {
+        //Save language
+        if (args.l) {
+            return saveLanguage(args.l)
+        } else {
+            return printLangHelp();
+        }
     }
     //Print weather
     return getForcast();
